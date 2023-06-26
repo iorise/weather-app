@@ -1,8 +1,38 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 
 const HomePage: React.FC = () => {
+  const [city, setCity] = useState<string>("");
+  const [weather, setWeather] = useState({});
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.NEXT_PUBLIC_WEATHER_KEY}`;
+
+  async function getData() {
+    const res = await fetch(url);
+    // The return value is *not* serialized
+    // You can return Date, Map, Set, etc.
+
+    // Recommendation: handle errors
+
+    const data = await res.json();
+    console.log(data);
+
+    return data;
+  }
+
+  const fetchWeather = (e: React.FormEvent) => {
+    setLoading(true);
+    getData();
+    setLoading(false);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCity(e.target.value);
+  };
   return (
     <main>
       <div className="absolute top-0 left-0 right-0 bottom-0 bg-black/50 z-[1]" />
@@ -20,9 +50,11 @@ const HomePage: React.FC = () => {
                 className="bg-transparent border-none focus:outline-none text-xl"
                 type="text"
                 placeholder="Search city here"
+                value={city}
+                onChange={handleInputChange}
               />
             </div>
-            <button type="button">
+            <button type="button" onClick={fetchWeather}>
               <BsSearch size={20} />
             </button>
           </form>
