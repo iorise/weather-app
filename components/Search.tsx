@@ -3,20 +3,15 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
-import Weather from "@/components/Weather";
-import type { WeatherData } from "@/types";
 
 type SearchProps = {
   city: string;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   fetchWeather: (e: React.FormEvent) => void;
+  loading: boolean
 };
 
-const Search = ({
-  city,
-  handleInputChange,
-  fetchWeather,
-}: SearchProps) => {
+const Search = ({ city, handleInputChange, fetchWeather, loading }: SearchProps) => {
   return (
     <main>
       <div className="absolute top-0 left-0 right-0 bottom-0 bg-black/50 z-[1]" />
@@ -41,14 +36,23 @@ const Search = ({
                 onChange={handleInputChange}
               />
             </div>
-            <button type="button" onClick={fetchWeather}>
+            <button type="button" onClick={fetchWeather}
+            className={`${loading ? "opacity-50" : ""}`}>{
+              loading ? (
+                <div className="animate-spin">
+
+                  <BsSearch size={20} />
+                </div>
+              ) :
               <BsSearch size={20} />
+            }
             </button>
           </form>
         </div>
       </section>
       <section>
-        <div className="flex flex-col relative max-w-[800px] w-full m-auto items-center justify-between bg-slate-500"></div>
+        <div className="flex flex-col relative max-w-[800px] w-full m-auto items-center justify-between bg-slate-500">
+        </div>
       </section>
     </main>
   );
